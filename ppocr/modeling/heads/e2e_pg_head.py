@@ -44,16 +44,16 @@ class ConvBNLayer(nn.Layer):
             stride=stride,
             padding=padding,
             groups=groups,
-            weight_attr=ParamAttr(name=name + '_weights'),
+            # weight_attr=ParamAttr(name=name + '_weights'),
             bias_attr=False)
 
         self.bn = nn.BatchNorm(
             num_channels=out_channels,
             act=act,
-            param_attr=ParamAttr(name="bn_" + name + "_scale"),
-            bias_attr=ParamAttr(name="bn_" + name + "_offset"),
-            moving_mean_name="bn_" + name + "_mean",
-            moving_variance_name="bn_" + name + "_variance",
+            # param_attr=ParamAttr(name="bn_" + name + "_scale"),
+            # bias_attr=ParamAttr(name="bn_" + name + "_offset"),
+            # moving_mean_name="bn_" + name + "_mean",
+            # moving_variance_name="bn_" + name + "_variance",
             use_global_stats=False)
 
     def forward(self, x):
@@ -109,7 +109,7 @@ class PGHead(nn.Layer):
             stride=1,
             padding=1,
             groups=1,
-            weight_attr=ParamAttr(name="conv_f_score{}".format(4)),
+            # weight_attr=ParamAttr(name="conv_f_score{}".format(4)),
             bias_attr=False)
 
         self.conv_f_boder1 = ConvBNLayer(
@@ -143,7 +143,7 @@ class PGHead(nn.Layer):
             stride=1,
             padding=1,
             groups=1,
-            weight_attr=ParamAttr(name="conv_f_boder{}".format(4)),
+            # weight_attr=ParamAttr(name="conv_f_boder{}".format(4)),
             bias_attr=False)
         self.conv_f_char1 = ConvBNLayer(
             in_channels=in_channels,
@@ -192,7 +192,7 @@ class PGHead(nn.Layer):
             stride=1,
             padding=1,
             groups=1,
-            weight_attr=ParamAttr(name="conv_f_char{}".format(6)),
+            # weight_attr=ParamAttr(name="conv_f_char{}".format(6)),
             bias_attr=False)
 
         self.conv_f_direc1 = ConvBNLayer(
@@ -226,7 +226,7 @@ class PGHead(nn.Layer):
             stride=1,
             padding=1,
             groups=1,
-            weight_attr=ParamAttr(name="conv_f_direc{}".format(4)),
+            # weight_attr=ParamAttr(name="conv_f_direc{}".format(4)),
             bias_attr=False)
 
     def forward(self, x, targets=None):

@@ -44,7 +44,7 @@ class ConvBNLayer(nn.Layer):
             stride=stride,
             padding=(kernel_size - 1) // 2,
             groups=groups,
-            weight_attr=ParamAttr(name=name + "_weights"),
+            # weight_attr=ParamAttr(name=name + "_weights"),
             bias_attr=False)
         if name == "conv1":
             bn_name = "bn_" + name
@@ -53,10 +53,10 @@ class ConvBNLayer(nn.Layer):
         self._batch_norm = nn.BatchNorm(
             out_channels,
             act=act,
-            param_attr=ParamAttr(name=bn_name + '_scale'),
-            bias_attr=ParamAttr(bn_name + '_offset'),
-            moving_mean_name=bn_name + '_mean',
-            moving_variance_name=bn_name + '_variance',
+            # param_attr=ParamAttr(name=bn_name + '_scale'),
+            # bias_attr=ParamAttr(bn_name + '_offset'),
+            # moving_mean_name=bn_name + '_mean',
+            # moving_variance_name=bn_name + '_variance',
             use_global_stats=False)
 
     def forward(self, inputs):
@@ -87,15 +87,15 @@ class DeConvBNLayer(nn.Layer):
             stride=stride,
             padding=padding,
             groups=groups,
-            weight_attr=ParamAttr(name=name + '_weights'),
+            # weight_attr=ParamAttr(name=name + '_weights'),
             bias_attr=False)
         self.bn = nn.BatchNorm(
             num_channels=out_channels,
             act=act,
-            param_attr=ParamAttr(name="bn_" + name + "_scale"),
-            bias_attr=ParamAttr(name="bn_" + name + "_offset"),
-            moving_mean_name="bn_" + name + "_mean",
-            moving_variance_name="bn_" + name + "_variance",
+            # param_attr=ParamAttr(name="bn_" + name + "_scale"),
+            # bias_attr=ParamAttr(name="bn_" + name + "_offset"),
+            # moving_mean_name="bn_" + name + "_mean",
+            # moving_variance_name="bn_" + name + "_variance",
             use_global_stats=False)
 
     def forward(self, x):

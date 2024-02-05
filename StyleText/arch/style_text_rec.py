@@ -256,7 +256,7 @@ class FusionGeneratorSimple(nn.Layer):
             stride=1,
             padding=1,
             groups=1,
-            weight_attr=paddle.ParamAttr(name=name + "_conv_weights"),
+            # weight_attr=paddle.ParamAttr(name=name + "_conv_weights"),
             bias_attr=False)
 
         self._res_block = ResBlock(
@@ -274,7 +274,7 @@ class FusionGeneratorSimple(nn.Layer):
             stride=1,
             padding=1,
             groups=1,
-            weight_attr=paddle.ParamAttr(name=name + "_reduce_conv_weights"),
+            # weight_attr=paddle.ParamAttr(name=name + "_reduce_conv_weights"),
             bias_attr=False)
 
     def forward(self, fake_text, fake_bg):

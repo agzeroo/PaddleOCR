@@ -44,7 +44,7 @@ class CBN(nn.Layer):
             padding=padding,
             dilation=dilation,
             groups=groups,
-            weight_attr=paddle.ParamAttr(name=name + "_weights"),
+            # weight_attr=paddle.ParamAttr(name=name + "_weights"),
             bias_attr=bias_attr)
         if norm_layer:
             self._norm_layer = getattr(paddle.nn, norm_layer)(
@@ -97,7 +97,7 @@ class SNConv(nn.Layer):
                 padding=padding,
                 dilation=dilation,
                 groups=groups,
-                weight_attr=paddle.ParamAttr(name=name + "_weights"),
+                # weight_attr=paddle.ParamAttr(name=name + "_weights"),
                 bias_attr=bias_attr))
         if norm_layer:
             self._norm_layer = getattr(paddle.nn, norm_layer)(
@@ -152,7 +152,7 @@ class SNConvTranspose(nn.Layer):
                 output_padding=output_padding,
                 dilation=dilation,
                 groups=groups,
-                weight_attr=paddle.ParamAttr(name=name + "_weights"),
+                # weight_attr=paddle.ParamAttr(name=name + "_weights"),
                 bias_attr=bias_attr))
         if norm_layer:
             self._norm_layer = getattr(paddle.nn, norm_layer)(

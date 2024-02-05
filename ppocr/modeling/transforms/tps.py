@@ -44,16 +44,17 @@ class ConvBNLayer(nn.Layer):
             stride=stride,
             padding=(kernel_size - 1) // 2,
             groups=groups,
-            weight_attr=ParamAttr(name=name + "_weights"),
+            # weight_attr=ParamAttr(name=name + "_weights"),
             bias_attr=False)
         bn_name = "bn_" + name
         self.bn = nn.BatchNorm(
             out_channels,
             act=act,
-            param_attr=ParamAttr(name=bn_name + '_scale'),
-            bias_attr=ParamAttr(bn_name + '_offset'),
-            moving_mean_name=bn_name + '_mean',
-            moving_variance_name=bn_name + '_variance')
+            # param_attr=ParamAttr(name=bn_name + '_scale'),
+            # bias_attr=ParamAttr(bn_name + '_offset'),
+            # moving_mean_name=bn_name + '_mean',
+            # moving_variance_name=bn_name + '_variance'
+            )
 
     def forward(self, x):
         x = self.conv(x)
@@ -101,7 +102,7 @@ class LocalizationNetwork(nn.Layer):
                 learning_rate=loc_lr,
                 name=name + "_w",
                 initializer=nn.initializer.Uniform(-stdv, stdv)),
-            bias_attr=ParamAttr(name=name + '.b_0'),
+            # bias_attr=ParamAttr(name=name + '.b_0'),
             name=name)
 
         # Init fc2 in LocalizationNetwork

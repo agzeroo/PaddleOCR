@@ -47,7 +47,7 @@ class ConvBNLayer(nn.Layer):
             stride=1 if is_vd_mode else stride,
             padding=(kernel_size - 1) // 2,
             groups=groups,
-            weight_attr=ParamAttr(name=name + "_weights"),
+            # weight_attr=ParamAttr(name=name + "_weights"),
             bias_attr=False)
         if name == "conv1":
             bn_name = "bn_" + name
@@ -56,10 +56,11 @@ class ConvBNLayer(nn.Layer):
         self._batch_norm = nn.BatchNorm(
             out_channels,
             act=act,
-            param_attr=ParamAttr(name=bn_name + '_scale'),
-            bias_attr=ParamAttr(bn_name + '_offset'),
-            moving_mean_name=bn_name + '_mean',
-            moving_variance_name=bn_name + '_variance')
+            # param_attr=ParamAttr(name=bn_name + '_scale'),
+            # bias_attr=ParamAttr(bn_name + '_offset'),
+            # moving_mean_name=bn_name + '_mean',
+            # moving_variance_name=bn_name + '_variance'
+            )
 
     def forward(self, inputs):
         if self.is_vd_mode:

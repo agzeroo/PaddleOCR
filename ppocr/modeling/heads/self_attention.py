@@ -362,7 +362,8 @@ class PrepareDecoder(nn.Layer):
         self.emb1 = paddle.nn.Embedding(
             num_embeddings=src_max_len,
             embedding_dim=self.src_emb_dim,
-            weight_attr=paddle.ParamAttr(name=pos_enc_param_name))
+            # weight_attr=paddle.ParamAttr(name=pos_enc_param_name)
+            )
         self.dropout_rate = dropout_rate
 
     def forward(self, src_word, src_pos):
