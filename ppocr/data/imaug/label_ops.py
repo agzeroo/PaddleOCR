@@ -241,6 +241,7 @@ class E2ELabelEncodeTrain(object):
     def __call__(self, data):
         import json
         label = data['label']
+        # print("Label before decoding:", label)
         label = json.loads(label)
         nBox = len(label)
         boxes, txts, txt_tags = [], [], []

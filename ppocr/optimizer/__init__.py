@@ -30,10 +30,11 @@ def build_lr_scheduler(lr_config, epochs, step_each_epoch):
     return lr
 
 
-def build_optimizer(config, epochs, step_each_epoch, model):
+def build_optimizer(config, end_lr, epochs, step_each_epoch, model):
     from . import regularizer, optimizer
     config = copy.deepcopy(config)
     # step1 build lr
+    config['lr']['learning_rate'] = end_lr
     lr = build_lr_scheduler(config.pop('lr'), epochs, step_each_epoch)
 
     # step2 build regularization

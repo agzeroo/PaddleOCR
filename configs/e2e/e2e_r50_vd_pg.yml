@@ -1,14 +1,15 @@
 Global:
   use_gpu: True
-  epoch_num: 600
+  epoch_num: 20
   log_smooth_window: 20
   print_batch_step: 10
-  save_model_dir: ./output/pgnet_r50_vd_totaltext/
-  save_epoch_step: 10
+  save_model_dir: ./output/pgnet_r50_vd_custom/
+  save_epoch_step: 20
   # evaluation is run every 0 iterationss after the 1000th iteration
-  eval_batch_step: [ 0, 1000 ]
+  eval_batch_step: [ 0, 10 ]
   cal_metric_during_train: False
   pretrained_model:
+  # freeze_params: True ######add #####
   checkpoints:
   save_inference_dir:
   use_visualdl: False
@@ -16,9 +17,10 @@ Global:
   infer_visual_type: EN # two mode: EN is for english datasets, CN is for chinese datasets
   valid_set: totaltext # two mode: totaltext valid curved words, partvgg valid non-curved words
   save_res_path: ./output/pgnet_r50_vd_totaltext/predicts_pgnet.txt
-  character_dict_path: ppocr/utils/ic15_dict.txt
+  # character_dict_path: ppocr/utils/ic15_dict.txt
+  character_dict_path: ppocr/utils/en_dict.txt
   character_type: EN
-  max_text_length: 50 # the max length in seq
+  max_text_length: 50 #50 #50 # the max length in seq
   max_text_nums: 30 # the max seq nums in a pic
   tcl_len: 64
 
@@ -33,14 +35,15 @@ Architecture:
     name: PGFPN
   Head:
     name: PGHead
-    character_dict_path: ppocr/utils/ic15_dict.txt # the same as Global:character_dict_path
-
+    # character_dict_path: ppocr/utils/ic15_dict.txt # the same as Global:character_dict_path
+    character_dict_path: ppocr/utils/en_dict.txt
 Loss:
   name: PGLoss
   tcl_bs: 64
-  max_text_length: 50 # the same as Global: max_text_length
+  max_text_length: 50 #50 # the same as Global: max_text_length
   max_text_nums: 30 # the same as Global：max_text_nums
-  pad_num: 36 # the length of dict for pad
+  # pad_num: 36 # the length of dict for pad
+  pad_num: 94 # the length of dict for pad
 
 Optimizer:
   name: Adam
@@ -52,11 +55,11 @@ Optimizer:
     warmup_epoch: 50
   regularizer:
     name: 'L2'
-    factor: 0.0001
+    factor: 0.001 #0.0001
 
 PostProcess:
   name: PGPostProcess
-  score_thresh: 0.5
+  score_thresh: 0.1 #0.5
   mode: fast   # fast or slow two ways
   point_gather_mode: align # same as PGProcessTrain: point_gather_mode
 
@@ -64,14 +67,15 @@ Metric:
   name: E2EMetric
   mode: A   # two ways for eval, A: label from txt,  B: label from gt_mat
   gt_mat_dir:  ./train_data/total_text/gt  # the dir of gt_mat
-  character_dict_path: ppocr/utils/ic15_dict.txt
+  # character_dict_path: ppocr/utils/ic15_dict.txt
+  character_dict_path: ppocr/utils/en_dict.txt
   main_indicator: f_score_e2e
 
 Train:
   dataset:
     name: PGDataSet
-    data_dir: ./train_data/total_text/train
-    label_file_list: [./train_data/total_text/train/train.txt]
+    data_dir: ./train_data/custom/train
+    label_file_list: [./train_data/custom/train/train.txt]
     ratio_list: [1.0]
     transforms:
       - DecodeImage: # load image
@@ -79,7 +83,7 @@ Train:
           channel_first: False
       - E2ELabelEncodeTrain:
       - PGProcessTrain:
-          batch_size: 14  # same as loader: batch_size_per_card
+          batch_size: 8 #14  # same as loader: batch_size_per_card
           use_resize: True
           use_random_crop: False
           min_crop_size: 24
@@ -91,14 +95,14 @@ Train:
   loader:
     shuffle: True
     drop_last: True
-    batch_size_per_card: 14
-    num_workers: 16
+    batch_size_per_card: 8 #14
+    num_workers: 0
 
 Eval:
   dataset:
     name: PGDataSet
-    data_dir: ./train_data/total_text/test
-    label_file_list: [./train_data/total_text/test/test.txt]
+    data_dir: ./train_data/custom/test
+    label_file_list: [./train_data/custom/test/test.txt]
     transforms:
       - DecodeImage: # load image
           img_mode: BGR
@@ -118,4 +122,4 @@ Eval:
     shuffle: False
     drop_last: False
     batch_size_per_card: 1 # must be 1
-    num_workers: 2
+    num_workers: 0

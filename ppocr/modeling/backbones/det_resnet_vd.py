@@ -113,6 +113,16 @@ class ConvBNLayer(nn.Layer):
         self.is_vd_mode = is_vd_mode
         self._pool2d_avg = nn.AvgPool2D(
             kernel_size=2, stride=2, padding=0, ceil_mode=True)
+        # if not is_dcn:
+        #     self._conv = nn.Conv2D(
+        #         in_channels=in_channels,
+        #         out_channels=out_channels,
+        #         kernel_size=kernel_size,
+        #         stride=stride,
+        #         padding=(kernel_size - 1) // 2,
+        #         groups=groups,
+        #         bias_attr=False)
+        
         if not is_dcn:
             self._conv = nn.Conv2D(
                 in_channels=in_channels,
@@ -120,8 +130,8 @@ class ConvBNLayer(nn.Layer):
                 kernel_size=kernel_size,
                 stride=stride,
                 padding=(kernel_size - 1) // 2,
-                groups=groups,
-                bias_attr=False)
+                groups=groups)
+            
         else:
             self._conv = DeformableConvV2(
                 in_channels=in_channels,

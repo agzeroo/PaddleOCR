@@ -59,7 +59,7 @@ class PGNet_PostProcess(object):
             p_char = p_char[0]
 
         src_h, src_w, ratio_h, ratio_w = self.shape_list[0]
-        instance_yxs_list, seq_strs = generate_pivot_list_fast(
+        instance_yxs_list, seq_strs, selected_p_scores = generate_pivot_list_fast(
             p_score,
             p_char,
             p_direction,
@@ -72,6 +72,7 @@ class PGNet_PostProcess(object):
         data = {
             'points': poly_list,
             'texts': keep_str_list,
+            'score':selected_p_scores,
         }
         return data
 

@@ -338,7 +338,7 @@ def draw_e2e_res(dt_boxes, strs, img_path):
             org=(int(box[0, 0, 0]), int(box[0, 0, 1])),
             fontFace=cv2.FONT_HERSHEY_COMPLEX,
             fontScale=0.7,
-            color=(0, 255, 0),
+            color=(255, 0, 0),
             thickness=1)
     return src_im
 

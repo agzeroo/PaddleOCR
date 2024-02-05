@@ -102,7 +102,7 @@ class LocalizationNetwork(nn.Layer):
                 learning_rate=loc_lr,
                 name=name + "_w",
                 initializer=nn.initializer.Uniform(-stdv, stdv)),
-            # bias_attr=ParamAttr(name=name + '.b_0'),
+            bias_attr=ParamAttr(name=name + '.b_0'),
             name=name)
 
         # Init fc2 in LocalizationNetwork

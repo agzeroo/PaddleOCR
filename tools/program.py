@@ -56,8 +56,8 @@ class ArgsParser(ArgumentParser):
 
     def parse_args(self, argv=None):
         args = super(ArgsParser, self).parse_args(argv)
-        assert args.config is not None, \
-            "Please specify --config=configure_file_path."
+        # assert args.config is not None, \
+        #     "Please specify --config=configure_file_path."
         args.opt = self._parse_opt(args.opt)
         return args
 
@@ -631,10 +631,9 @@ def get_center(model, eval_dataloader, post_process_class):
     return char_center
 
 
-def preprocess(is_train=False):
+def preprocess(config_path, is_train=False):
     FLAGS = ArgsParser().parse_args()
-    profiler_options = FLAGS.profiler_options
-    config = load_config(FLAGS.config)
+    config = load_config(config_path)
     config = merge_config(config, FLAGS.opt)
     profile_dic = {"profiler_options": FLAGS.profiler_options}
     config = merge_config(config, profile_dic)

@@ -24,7 +24,7 @@ from __future__ import unicode_literals
 import numpy as np
 import cv2
 import random
-
+np.random.seed(1)
 
 def is_poly_in_rect(poly, x, y, w, h):
     poly = np.array(poly)

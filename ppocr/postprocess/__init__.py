@@ -61,6 +61,7 @@ def build_post_process(config, global_config=None):
         support_dict.append('PSEPostProcess')
 
     config = copy.deepcopy(config)
+    # config['score_thresh']=threshold
     module_name = config.pop('name')
     if module_name == "None":
         return

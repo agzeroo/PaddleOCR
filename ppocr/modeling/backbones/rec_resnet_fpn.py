@@ -184,6 +184,7 @@ class ConvBNLayer(nn.Layer):
                  act=None,
                  name=None):
         super(ConvBNLayer, self).__init__()
+        
         self.conv = nn.Conv2D(
             in_channels=in_channels,
             out_channels=out_channels,
@@ -191,22 +192,39 @@ class ConvBNLayer(nn.Layer):
             dilation=2 if stride == (1, 1) else 1,
             stride=stride,
             padding=(kernel_size - 1) // 2,
-            groups=groups,
-            # weight_attr=ParamAttr(name=name + '.conv2d.output.1.w_0'),
-            bias_attr=False, )
+            groups=groups,bias_attr=False )
+
+
+        # self.conv = nn.Conv2D(
+        #     in_channels=in_channels,
+        #     out_channels=out_channels,
+        #     kernel_size=2 if stride == (1, 1) else kernel_size,
+        #     dilation=2 if stride == (1, 1) else 1,
+        #     stride=stride,
+        #     padding=(kernel_size - 1) // 2,
+        #     groups=groups,
+        #     weight_attr=ParamAttr(name=name + '.conv2d.output.1.w_0'),
+        #     bias_attr=False, )
 
         if name == "conv1":
             bn_name = "bn_" + name
         else:
             bn_name = "bn" + name[3:]
+        
         self.bn = nn.BatchNorm(
             num_channels=out_channels,
             act=act,
-            # param_attr=ParamAttr(name=name + '.output.1.w_0'),
-            # bias_attr=ParamAttr(name=name + '.output.1.b_0'),
             # moving_mean_name=bn_name + "_mean",
             # moving_variance_name=bn_name + "_variance"
             )
+        
+        # self.bn = nn.BatchNorm(
+        #     num_channels=out_channels,
+        #     act=act,
+        #     param_attr=ParamAttr(name=name + '.output.1.w_0'),
+        #     bias_attr=ParamAttr(name=name + '.output.1.b_0'),
+        #     moving_mean_name=bn_name + "_mean",
+        #     moving_variance_name=bn_name + "_variance")
 
     def __call__(self, x):
         x = self.conv(x)

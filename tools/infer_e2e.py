@@ -40,6 +40,9 @@ import tools.program as program
 from PIL import Image, ImageDraw, ImageFont
 import math
 
+import base64
+import util
+
 
 def draw_e2e_res_for_chinese(image,
                              boxes,
@@ -91,7 +94,7 @@ def draw_e2e_res(dt_boxes, strs, config, img, img_name):
                 org=(int(box[0, 0, 0]), int(box[0, 0, 1])),
                 fontFace=cv2.FONT_HERSHEY_COMPLEX,
                 fontScale=0.7,
-                color=(0, 255, 0),
+                color=(0, 0, 0), # text color
                 thickness=1)
         save_det_path = os.path.dirname(config['Global'][
             'save_res_path']) + "/e2e_results/"
@@ -103,12 +106,15 @@ def draw_e2e_res(dt_boxes, strs, config, img, img_name):
 
 
 def main():
+    infer_img="./train_data/custom/train/rgb/000060.jpg"
+    pretrained_model_path="./output/pgnet_r50_vd_custom_60image_50epoch/best_model/model" 
+    
     global_config = config['Global']
 
     # build model
     model = build_model(config['Architecture'])
 
-    load_model(config, model)
+    load_model(config, model,pretrained_model_path)
 
     # build post process
     post_process_class = build_post_process(config['PostProcess'],
@@ -129,13 +135,18 @@ def main():
     save_res_path = config['Global']['save_res_path']
     if not os.path.exists(os.path.dirname(save_res_path)):
         os.makedirs(os.path.dirname(save_res_path))
+    
+    
+    
 
     model.eval()
     with open(save_res_path, "wb") as fout:
-        for file in get_image_file_list(config['Global']['infer_img']):
+        for file in get_image_file_list(infer_img):
             logger.info("infer_img: {}".format(file))
             with open(file, 'rb') as f:
                 img = f.read()
+                base64str = base64.b64encode(img).decode('utf-8')
+                img = base64.b64decode(base64str)
                 data = {'image': img}
             batch = transform(data, ops)
             images = np.expand_dims(batch[0], axis=0)
@@ -144,6 +155,7 @@ def main():
             preds = model(images)
             post_result = post_process_class(preds, shape_list)
             points, strs = post_result['points'], post_result['texts']
+            print(points, strs)
             # write result
             dt_boxes_json = []
             for poly, str in zip(points, strs):
@@ -170,5 +182,6 @@ def main():
 
 
 if __name__ == '__main__':
-    config, device, logger, vdl_writer = program.preprocess()
+    config_path='configs/e2e/e2e_r50_vd_pg.yml'
+    config, device, logger, vdl_writer = program.preprocess(config_path)
     main()

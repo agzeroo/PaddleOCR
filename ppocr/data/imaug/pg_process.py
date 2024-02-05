@@ -886,17 +886,61 @@ class PGProcessTrain(object):
 
         if self.use_resize is True:
             ori_h, ori_w, _ = im.shape
+
+            # Ensure a minimum size before resizing
             if max(ori_h, ori_w) < 200:
                 ratio = 200 / max(ori_h, ori_w)
                 im = cv2.resize(im, (int(ori_w * ratio), int(ori_h * ratio)))
                 text_polys[:, :, 0] *= ratio
                 text_polys[:, :, 1] *= ratio
-
+                
             if max(ori_h, ori_w) > 512:
-                ratio = 512 / max(ori_h, ori_w)
-                im = cv2.resize(im, (int(ori_w * ratio), int(ori_h * ratio)))
-                text_polys[:, :, 0] *= ratio
-                text_polys[:, :, 1] *= ratio
+                min_size = input_size // 2
+                if ori_w >= ori_h:
+                    # Larger side is width
+                    ratio_w= input_size / ori_w
+                    ratio_h= input_size / ori_w
+                    
+                    im = cv2.resize(im, (int(ori_w * ratio_w), int(ori_h * ratio_h)))
+                    text_polys[:, :, 0] *= ratio_w
+                    text_polys[:, :, 1] *= ratio_h
+
+                    if ori_h * ratio_h < min_size:
+                        pad_size = min_size - int(ori_h * ratio_h)
+                        im = np.pad(im, ((pad_size // 2, pad_size - pad_size // 2), (0, 0), (0, 0)), mode='constant', constant_values=0)
+                        # Adjust text_polys coordinates after padding
+                        text_polys[:, :, 1] += (pad_size / 2)
+                               
+                else:
+                    ratio_w= input_size / ori_h
+                    ratio_h= input_size / ori_h
+                    
+                    im = cv2.resize(im, (int(ori_w * ratio_w), int(ori_h * ratio_h)))
+                    text_polys[:, :, 0] *= ratio_w
+                    text_polys[:, :, 1] *= ratio_h
+
+                    if ori_h * ratio_h < min_size:
+                        pad_size = min_size - int(ori_h * ratio_h)
+                        im = np.pad(im, ((pad_size // 2, pad_size - pad_size // 2), (0, 0), (0, 0)), mode='constant', constant_values=0)
+                        # Adjust text_polys coordinates after padding
+                        text_polys[:, :, 1] += (pad_size / 2)
+                        
+                    
+                    
+                # ori_h, ori_w, _ = im.shape
+                # if max(ori_h, ori_w) < 200:
+                #     ratio = 200 / max(ori_h, ori_w)
+                #     im = cv2.resize(im, (int(ori_w * ratio), int(ori_h * ratio)))
+                #     text_polys[:, :, 0] *= ratio
+                #     text_polys[:, :, 1] *= ratio
+
+                # if max(ori_h, ori_w) > 512:
+                #     ratio = 512 / max(ori_h, ori_w)
+                #     im = cv2.resize(im, (int(ori_w * ratio), int(ori_h * ratio)))
+                #     text_polys[:, :, 0] *= ratio
+                #     text_polys[:, :, 1] *= ratio
+                
+                
         elif self.use_random_crop is True:
             h, w, _ = im.shape
             if max(h, w) > 2048:
@@ -926,8 +970,10 @@ class PGProcessTrain(object):
             return None
         # resize image
         std_ratio = float(input_size) / max(new_w, new_h)
+        # rand_scales = np.array(
+        #     [0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1.0, 1.0, 1.0, 1.0, 1.0])
         rand_scales = np.array(
-            [0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1.0, 1.0, 1.0, 1.0, 1.0])
+            [0.625, 0.75, 0.875, 1.0, 1.0,1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
         rz_scale = std_ratio * np.random.choice(rand_scales)
         im = cv2.resize(im, dsize=None, fx=rz_scale, fy=rz_scale)
         text_polys[:, :, 0] *= rz_scale

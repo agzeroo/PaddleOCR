@@ -44,17 +44,32 @@ class ConvBNLayer(nn.Layer):
             stride=stride,
             padding=padding,
             groups=groups,
-            # weight_attr=ParamAttr(name=name + '_weights'),
             bias_attr=False)
 
         self.bn = nn.BatchNorm(
             num_channels=out_channels,
             act=act,
-            # param_attr=ParamAttr(name="bn_" + name + "_scale"),
-            # bias_attr=ParamAttr(name="bn_" + name + "_offset"),
             # moving_mean_name="bn_" + name + "_mean",
             # moving_variance_name="bn_" + name + "_variance",
             use_global_stats=False)
+        # self.conv = nn.Conv2D(
+        #     in_channels=in_channels,
+        #     out_channels=out_channels,
+        #     kernel_size=kernel_size,
+        #     stride=stride,
+        #     padding=padding,
+        #     groups=groups,
+        #     weight_attr=ParamAttr(name=name + '_weights'),
+        #     bias_attr=False)
+
+        # self.bn = nn.BatchNorm(
+        #     num_channels=out_channels,
+        #     act=act,
+        #     param_attr=ParamAttr(name="bn_" + name + "_scale"),
+        #     bias_attr=ParamAttr(name="bn_" + name + "_offset"),
+        #     moving_mean_name="bn_" + name + "_mean",
+        #     moving_variance_name="bn_" + name + "_variance",
+        #     use_global_stats=False)
 
     def forward(self, x):
         x = self.conv(x)
@@ -68,7 +83,7 @@ class PGHead(nn.Layer):
 
     def __init__(self,
                  in_channels,
-                 character_dict_path='ppocr/utils/ic15_dict.txt',
+                 character_dict_path='ppocr/utils/en_dict.txt',
                  **kwargs):
         super(PGHead, self).__init__()
 

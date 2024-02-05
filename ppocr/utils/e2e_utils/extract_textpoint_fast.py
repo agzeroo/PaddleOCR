@@ -398,9 +398,20 @@ def generate_pivot_list_fast(p_score,
     skeleton_map = thin(p_tcl_map.astype(np.uint8))
     instance_count, instance_label_map = cv2.connectedComponents(
         skeleton_map.astype(np.uint8), connectivity=8)
+  
+    # # Display the original image and the labeled image
+    # cv2.imshow("Original Image", (skeleton_map * 255).astype(np.uint8))  # Explicitly convert to uint8 for display
+    # cv2.imwrite("Labeled Components_0.1.jpg", (skeleton_map * 255).astype(np.uint8))  # Replace "resized_image.jpg" with the desired filename and format
+
+
+    # # Wait for a key press and close the windows
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
 
     # get TCL Instance
     all_pos_yxs = []
+    # selected_p_scores = [] 
+    mean_p_scores=[]
     if instance_count > 0:
         for instance_id in range(1, instance_count):
             pos_list = []
@@ -413,6 +424,10 @@ def generate_pivot_list_fast(p_score,
             pos_list_sorted = sort_and_expand_with_direction_v2(
                 pos_list, f_direction, p_tcl_map)
             all_pos_yxs.append(pos_list_sorted)
+            
+            # mean_p_scores.append(np.mean(p_score[ys, xs]))
+            
+            # selected_p_scores.extend(p_score[ys, xs])
 
     p_char_maps = p_char_maps.transpose([1, 2, 0])
     decoded_str, keep_yxs_list = ctc_decoder_for_image(
@@ -420,7 +435,21 @@ def generate_pivot_list_fast(p_score,
         logits_map=p_char_maps,
         Lexicon_Table=Lexicon_Table,
         point_gather_mode=point_gather_mode)
-    return keep_yxs_list, decoded_str
+    for yx_list in keep_yxs_list:
+        ys, xs = zip(*yx_list)
+        mean_p_score = np.mean(p_score[ys, xs])
+        # print(f"Coordinates: {yx_list}, Mean p_score: {mean_p_score}, P_score:{p_score[ys, xs]}")
+        mean_p_scores.append(mean_p_score)
+    
+    # for yx_list in keep_yxs_list:
+    #     ys, xs = zip(*yx_list)
+    #     # Only include values above the threshold in the mean calculation
+    #     valid_p_scores = p_score[ys, xs][p_score[ys, xs] > score_thresh]
+    #     mean_p_score = np.mean(valid_p_scores) if len(valid_p_scores) > 0 else 0.0
+    #     # print(f"Coordinates: {yx_list}, Mean p_score: {mean_p_score}")
+    #     mean_p_scores.append(mean_p_score)
+
+    return keep_yxs_list, decoded_str,mean_p_scores
 
 
 def extract_main_direction(pos_list, f_direction):

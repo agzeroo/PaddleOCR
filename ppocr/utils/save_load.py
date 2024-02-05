@@ -45,14 +45,15 @@ def _mkdir_if_not_exist(path, logger):
                 raise OSError('Failed to mkdir {}'.format(path))
 
 
-def load_model(config, model, optimizer=None, model_type='det'):
+def load_model(config, model, pretrained_model_path, optimizer=None, model_type='det'):
     """
     load model from checkpoint or pretrained_model
     """
     logger = get_logger()
     global_config = config['Global']
     checkpoints = global_config.get('checkpoints')
-    pretrained_model = global_config.get('pretrained_model')
+    # pretrained_model = global_config.get('pretrained_model')
+    pretrained_model = pretrained_model_path
     best_model_dict = {}
     is_float16 = False
     is_nlp_model = model_type == 'kie' and config["Architecture"][

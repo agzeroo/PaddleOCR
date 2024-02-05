@@ -189,7 +189,8 @@ def main(config, device, logger, vdl_writer):
         scaler = None
 
     # load pretrain model
-    pre_best_model_dict = load_model(config, model, optimizer,
+    pretrained_model_path="./en_server_pgnetA/best_accuracy" 
+    pre_best_model_dict = load_model(config, model,pretrained_model_path, optimizer,
                                      config['Architecture']["model_type"])
 
     if config['Global']['distributed']:
@@ -221,7 +222,9 @@ def test_reader(config, device, logger):
 
 
 if __name__ == '__main__':
-    config, device, logger, vdl_writer = program.preprocess(is_train=True)
+    config_path='./configs/e2e/e2e_r50_vd_pg.yml'
+    config, device, logger, vdl_writer = program.preprocess(config_path,is_train=True)
+    # config, device, logger, vdl_writer = program.preprocess(is_train=True)
     seed = config['Global']['seed'] if 'seed' in config['Global'] else 1024
     set_seed(seed)
     main(config, device, logger, vdl_writer)

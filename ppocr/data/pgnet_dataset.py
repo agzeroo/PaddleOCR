@@ -77,9 +77,12 @@ class PGDataSet(Dataset):
         img_id = 0
         try:
             data_line = data_line.decode('utf-8')
+            # data_line= data_line.replace("\r\n", "\n")
             substr = data_line.strip("\n").split(self.delimiter)
             file_name = substr[0]
+            # file_name = self._try_parse_filename_list(file_name)
             label = substr[1]
+            # label = label.rstrip('\r')
             img_path = os.path.join(self.data_dir, file_name)
             if self.mode.lower() == 'eval':
                 try:

@@ -81,7 +81,7 @@ def set_signal_handlers():
             signal.signal(signal.SIGTERM, term_mp)
 
 
-def build_dataloader(config, mode, device, logger, seed=None):
+def build_dataloader(config,img_batch, mode, device, logger, seed=None):
     config = copy.deepcopy(config)
 
     support_dict = [
@@ -106,7 +106,8 @@ def build_dataloader(config, mode, device, logger, seed=None):
 
     dataset = eval(module_name)(config, mode, logger, seed)
     loader_config = config[mode]['loader']
-    batch_size = loader_config['batch_size_per_card']
+    batch_size = img_batch
+    # batch_size = loader_config['batch_size_per_card']
     drop_last = loader_config['drop_last']
     shuffle = loader_config['shuffle']
     num_workers = loader_config['num_workers']

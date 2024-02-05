@@ -248,16 +248,24 @@ class FusionGeneratorSimple(nn.Layer):
             use_bias = True
         else:
             use_bias = False
-
+            
         self._conv = nn.Conv2D(
             in_channels=6,
             out_channels=encode_dim,
             kernel_size=3,
             stride=1,
             padding=1,
-            groups=1,
-            # weight_attr=paddle.ParamAttr(name=name + "_conv_weights"),
-            bias_attr=False)
+            groups=1)
+
+        # self._conv = nn.Conv2D(
+        #     in_channels=6,
+        #     out_channels=encode_dim,
+        #     kernel_size=3,
+        #     stride=1,
+        #     padding=1,
+        #     groups=1,
+        #     weight_attr=paddle.ParamAttr(name=name + "_conv_weights"),
+        #     bias_attr=False)
 
         self._res_block = ResBlock(
             name="{}_conv_block".format(name),
